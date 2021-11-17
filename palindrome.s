@@ -12,7 +12,11 @@
 		swi 0x12		@ return r0 <-- addr of block
 		ldr r1, =CharBuffer	@ loading CharBuffer pointer into r1
 		str r0, [r1]		@ store 1 byte block in CharBuffer
-
+	reader:
+		ldr r0, =InFileHandle	@ loading file handle into r0
+		ldr r0, [r0]		@ rereferencing r0
+		ldr r1, [r1]		@ dereferencing char buffer
+		mov r2, #1		@ move max amount of bytes to be read into 
 
 
 
@@ -22,3 +26,4 @@
 InFileName: .ascii "word.txt"
 InFileHandle: .word 0
 CharBuffer: .word 0
+length: .4byte 0
