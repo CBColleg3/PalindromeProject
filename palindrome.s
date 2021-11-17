@@ -17,7 +17,8 @@
 		ldr r0, [r0]		@ rereferencing r0
 		ldr r1, [r1]		@ dereferencing char buffer
 		mov r2, #1		@ move max amount of bytes to be read into 
-
+		cmp r0, #0
+		bne reader
 
 
 
