@@ -20,9 +20,11 @@
 		swi 0x6a		@ read string into r1 addr, which is pre-allocated string
 		@@ string is now in r1
 		mov r4, #0		@ set loop i to 0
+		ldr r0, =blurb	@@ loads blurb "Your word is:   " into r0
+		swi 0x02		@@ prints out blurb string to stdout
 		
 	get_len:
-		ldrb r0, [r1,r4]	@ load thestring[r4] into r0
+		ldrb r0, [r1,r4]	@ load the string character at index i (contained in r4) into r0
 		cmp r0, #0		@ when r0 == 0, then we reached the null character at the end
 		beq gl_end
 		swi 0x00		@ print out character for sanity check
@@ -66,5 +68,6 @@
 InFileName: .ascii "word.txt"
 InFileHandle: .word 0
 CharBuffer: .skip 99999999
+blurb:  .ascii "\nYour word is:   \0"
 notpalin: .ascii "\nNot Palindrome\0"
 ispalin:  .ascii "\nPalindrome\0"
