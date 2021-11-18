@@ -58,5 +58,5 @@
 InFileName: .ascii "word.txt"
 InFileHandle: .word 0
 CharBuffer: .skip 99999999
-notpalin: .ascii "Not palindrome"
+notpalin: .ascii "Not "
 ispalin:  .ascii "Palindrome"
