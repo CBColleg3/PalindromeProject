@@ -10,6 +10,7 @@
 		ldr r1, =InFileHandle	@ load pointer to in file handle into r1
 		str r0, [ r1 ]		@ stored file handle returned in InFileHandle pointer
 		ldr r1, =CharBuffer	@ loading CharBuffer pointer into r1
+		
 	reader:
 		@@@ word.txt file handle initialization
 		ldr r0, =InFileHandle	@ loading file handle into r0
@@ -19,6 +20,7 @@
 		swi 0x6a		@ read string into r1 addr, which is pre-allocated string
 		@@ string is now in r1
 		mov r4, #0		@ set loop i to 0
+		
 	get_len:
 		ldrb r0, [r1,r4]	@ load thestring[r4] into r0
 		cmp r0, #0		@ when r0 == 0, then we reached the null character at the end
@@ -33,6 +35,7 @@
 		mov r4, r7		@ set j = len-1 of string
 		sub r4, r4, #1		@ decrement by 1 to be len-1
 		mov r2, #0		@ set i = 0 index
+		
 	palinloop:
 		cmp r2, r4		@@ end loop when i == j
 		beq ipalin		@@ if they are equal, end loop, we found a palindrome
@@ -43,14 +46,19 @@
 		add r2, r2, #1		@@ increment i
 		sub r4, r4, #1		@@ decrement j
 		b palinloop		@@ repeat loop
+		
 	npalin:				@@ prints out that the string is not a palindrome
 		ldr r0, =notpalin	@@ loads the string "Not Palindrome" into r0
 		swi 0x02		@@ prints out the string above to stdout
-		swi 0x11		@@ ends program running
+		b exit
+		
 	ipalin:				@@ prints out that the string is a palindrome
 		ldr r0, =ispalin	@@ loads string "Palindrome" into r0
 		swi 0x02		@@ prints out string "Palindrome" to stdout
-		swi 0x11		@@ ends program running
+		b exit
+		
+	exit:
+		swi 0x11
 
 
 .data
@@ -58,5 +66,5 @@
 InFileName: .ascii "word.txt"
 InFileHandle: .word 0
 CharBuffer: .skip 99999999
-notpalin: .ascii "Not "
-ispalin:  .ascii "Palindrome"
+notpalin: .ascii "\nNot Palindrome\0"
+ispalin:  .ascii "\nPalindrome\0"
