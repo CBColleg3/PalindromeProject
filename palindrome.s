@@ -40,9 +40,14 @@
 		
 	palinloop:
 		cmp r2, r4		@@ end loop when i == j
-		beq ipalin		@@ if they are equal, end loop, we found a palindrome
+		bge ipalin		@@ if they are equal, end loop, we found a palindrome
 		ldrb r0, [r1,r2]	@@ load character at r1[i]
 		ldrb r3, [r1,r4]	@@ load character at r1[j]
+		mov r5, r0
+		bl checkAlph
+		mov r5, r3
+		bl checkAlph
+		bl checkCase
 		cmp r0, r3		@@ compare the two, if they are not equal immediately branch to not palindrome
 		bne npalin		@@ not a palindrome
 		add r2, r2, #1		@@ increment i
@@ -61,6 +66,29 @@
 		
 	exit:
 		swi 0x11
+	
+	warning:
+		ldr r0, =warningMsg	@@ loads warning into r0
+		swi 0x02			@@ prints out warning
+		b exit
+		
+	checkCase:
+		cmp r0, #97
+		addlt r0, r0, #32
+		cmp r3, #97
+		addlt r3, r3, #32
+		mov pc, lr
+	
+	checkAlph:
+		cmp r5, #65
+		blt warning
+		cmp r5, #122
+		bgt warning
+		subs r5, r5, #90
+		movle pc, lr
+		subs r5, r5, #6
+		ble warning
+		mov pc, lr
 
 
 .data
@@ -68,6 +96,7 @@
 InFileName: .ascii "word.txt"
 InFileHandle: .word 0
 CharBuffer: .skip 99999999
+warningMsg: .ascii "\nNon-alphabetical character found! Please remove and try again.\0"
 blurb:  .ascii "\nYour word is:   \0"
 notpalin: .ascii "\nNot Palindrome\0"
 ispalin:  .ascii "\nPalindrome\0"
